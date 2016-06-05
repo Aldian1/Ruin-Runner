@@ -13,10 +13,13 @@ public class Player_Controller : MonoBehaviour {
     public int jumpingstage;
 
     private Animator animbar;
+
+    private Rigidbody2D rb;
 	// Use this for initialization
 	void Start () {
         img = BarHolder.GetComponent<Image>();
         animbar = BarHolder.GetComponent<Animator>();
+        rb = GetComponent<Rigidbody2D>();
     }
 	
 	// Update is called once per frame
@@ -73,6 +76,17 @@ public class Player_Controller : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Mouse0))
         {
 
+            //fix up this so it doesnt call get comp
+            directional.GetComponent<Animation>().Stop();
+            Vector3 dir = new Vector3(0,0,75);
+            Debug.Log(directional.GetComponent<RectTransform>().rotation.z);
+            rb.AddForce(Vector2.right * img.fillAmount * 1000);
+            jumpingstage = 0;
+            directional.SetActive(false);
+            PowerBar.SetActive(false);
+            CancelInvoke("Stage2");
+            return;
+            // rb.AddForce(Vector3.up * 1000);
         }
     }
 
