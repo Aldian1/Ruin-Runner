@@ -24,6 +24,7 @@ public class SceneController : MonoBehaviour
 
     private Rigidbody2D rb; 
 
+	public int clicks = 0;
   
     // Use this for initialization
     void Start()
@@ -56,13 +57,15 @@ public class SceneController : MonoBehaviour
     {
         Player.transform.Translate(Vector3.right * speed);
 
-        if(Input.GetKeyDown(KeyCode.Mouse0))
+		if(Input.GetKeyDown(KeyCode.Mouse0) && clicks < 2)
         {
-            rb.AddForce(Vector2.up * jumppower);
-            rb.AddForce(Vector2.right * rightjumppower);
+			rb.AddRelativeForce(Vector2.up * jumppower);
+			rb.AddRelativeForce(Vector2.right * rightjumppower);
+			clicks += 1;
         }
 
     }
+
 
 
 }
