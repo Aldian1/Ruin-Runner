@@ -8,11 +8,14 @@ public class DeadZone : MonoBehaviour
     void OnTriggerEnter2D(Collider2D col)
     {
         Debug.Log("working");
-       
-        if (col.gameObject.tag == "Player")
-        {
-            col.gameObject.transform.position = startpos.position;
-        }
+
+        //  if (col.gameObject.tag == "Player")
+        //  {
+        //   col.gameObject.transform.position = startpos.position;
+        //     Camera.main.GetComponent<SceneController>().Reset();
+        //  }
+
+        GameObject.FindGameObjectWithTag("Stats").GetComponentInParent<MenuController>().ChangeScreen(true); ;
     }
 
 }
