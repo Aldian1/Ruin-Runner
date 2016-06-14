@@ -9,8 +9,13 @@ public class MenuController : MonoBehaviour {
     public GameObject camera_;
     public GameObject particles;
     public bool change_;
+
+    GameObject player;
+
 	// Use this for initialization
 	void Start () {
+        player = GameObject.FindGameObjectWithTag("Player");
+
         stats = GameObject.FindGameObjectWithTag("Stats");
         stats.SetActive(false);
         menuoverlay = GameObject.FindGameObjectWithTag("OverLayImage");
@@ -46,15 +51,20 @@ public class MenuController : MonoBehaviour {
        
         if(change)
         {
-            Debug.Log("yh");
+            //  Debug.Log("yh");
+            player.SetActive(false);
             GameoverCanvas.SetActive(true);
             change_ = true;
-            GameObject.FindGameObjectWithTag("Player").SetActive(false);
+          
             return;
         }
         if(!change)
         {
- 
+            GameoverCanvas.SetActive(false);
+            change_ = false;
+            Camera.main.GetComponent<SceneController>().Reset();
+           // player.SetActive(true);
+          
             return;
         }
         

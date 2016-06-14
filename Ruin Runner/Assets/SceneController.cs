@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class SceneController : MonoBehaviour
 {
@@ -34,8 +35,10 @@ public class SceneController : MonoBehaviour
     private Image bar;
 
     private Text multitext;
-    private float score_;
+    public float score_;
     public Text score;
+
+    private Transform lastpos;
   
     // Use this for initialization
     void Start()
@@ -46,6 +49,7 @@ public class SceneController : MonoBehaviour
         multitext = bar.GetComponentInChildren<Text>();
 
         StartCoroutine("MultiTimer");
+        lastpos = Player.transform;
 
         //Load pillars from resources in future
 
@@ -65,8 +69,9 @@ public class SceneController : MonoBehaviour
             CurrentPositionOfLastPlatform = go.transform;
 
             //deciding if the pillar needs foliage or not
-            if (foil == 1 || foil == 2)
-            {
+
+            //Deprecated ^^ we decided that all pillars should have foilage to cover the edges 13/06/2016
+           
 
                 //setting the vector to spawn at
                 Vector3 PO = new Vector3(go.transform.position.x, waterplain.transform.position.y + .2F, go.transform.position.z);
@@ -74,7 +79,7 @@ public class SceneController : MonoBehaviour
                 GameObject foila = Instantiate(foilagesrites, PO, Quaternion.identity) as GameObject;
 
                 foila.GetComponent<SpriteRenderer>().sprite = foliagesprites_[Random.Range(0, foliagesprites_.Length)];
-            }
+            
             //setting the min jumpower incase someone fiddles in the editor with it
      
         }
@@ -105,7 +110,7 @@ public class SceneController : MonoBehaviour
             multiplier += 1;
             bar.fillAmount = 1;
             multitext.text = multiplier.ToString() + "x";
-            score_ += 1 * multiplier;
+          
           
 
 
@@ -138,11 +143,19 @@ public class SceneController : MonoBehaviour
     }
 
     public void Reset()
-    {
+    { 
+        Player.transform.position = lastpos.position;
         multiplier = 1;
         bar.fillAmount = 1;
         multitext.text = multiplier.ToString() + "x";
         score_ = 0;
+       // Player.SetActive(true);
+        
+    }
+
+    public void ReloadScene()
+    {
+        GameObject.FindGameObjectWithTag("Stats").GetComponentInParent<MenuController>().ChangeScreen(false); ;
     }
 
 }
