@@ -20,19 +20,17 @@ public class SceneController : MonoBehaviour
     public int ChunckSize;
 
     public List<GameObject> ChunckList = new List<GameObject>();
-    private List<GameObject> foliagechunck = new List<GameObject>();
+    public List<GameObject> BGList = new List<GameObject>();
 
 
 
-    public Transform CurrentPositionOfLastPlatform, LastForeGround, LastMidGround, LastRuin,LastWater;
 
-    public int CurrentLevel;
+    public Transform CurrentPositionOfLastPlatform, LastForeGround, LastMidGround, LastRuin,CurrentBackground;
+
+    private Transform ORGPlatform,ORGLastFore,ORGLastMid,ORGLastRuin,ORGcurrentBG;
 
 
-
-    public float difficultyMultiplier;
-
-    public GameObject doublepillar, bottompillar, waterplain;
+    public GameObject doublepillar, bottompillar, waterplain,backgroundcolor,CrumblePillar;
 
     public GameObject Bow, Player;
 
@@ -53,11 +51,20 @@ public class SceneController : MonoBehaviour
     private Transform lastpos;
     private bool firstrun;
 
+    public int difficultymultiplier;
+
+    public GameObject CoinShout;
+
     // Use this for initialization
     void Start()
     {
-
-        SpawnWorld();
+        //setting our originals
+        ORGPlatform = CurrentPositionOfLastPlatform;
+        ORGLastFore = LastForeGround;
+        ORGLastMid = LastMidGround;
+        ORGLastRuin = LastRuin;
+        ORGcurrentBG = CurrentBackground;
+      
         //loading area
         bar = GameObject.FindGameObjectWithTag("MovingBar").GetComponent<Image>();
         rb = Player.GetComponent<Rigidbody2D>();
@@ -78,31 +85,42 @@ public class SceneController : MonoBehaviour
     void Update()
     {
 
-
-        //spawning the level ahead of us
-        if(Vector2.Distance(this.transform.position,CurrentPositionOfLastPlatform.transform.position) < 5)
+        if (CurrentPositionOfLastPlatform != null)
         {
-            SpawnWorld();
+            //spawning the level ahead of us
+            if (Vector2.Distance(this.transform.position, CurrentPositionOfLastPlatform.transform.position) < 5)
+            {
+                SpawnWorld();
+            }
+        }
+        if (ChunckList[0] != null)
+        {
+            if (Vector2.Distance(this.transform.position, ChunckList[0].transform.position) > 30)
+            {
+                Destroy(ChunckList[0].gameObject);
+                ChunckList.Remove(ChunckList[0]);
+
+            }
+        }
+        if (BGList[0] != null)
+        {
+            if (Vector2.Distance(this.transform.position, BGList[0].transform.position) > 60)
+            {
+
+                Destroy(BGList[0].gameObject);
+                BGList.Remove(BGList[0]);
+            }
         }
 
-      //  if(Vector2.Distance(this.transform.position, ChunckList[ChunckList.Count].transform.position) > 5)
-      //  {
-     //       Destroy(ChunckList[0].gameObject);
-      //      ChunckList.Remove(ChunckList[0]);
-      //  }
-
-
         score.text = score_.ToString();
-        //deprecated
-        /* //if we are holding the mouse we increase the jumppower, check that we arent exceeding the jumpower though
-         if(Input.GetKey(KeyCode.Mouse0) && jumppower <= MaxJumpPower)
-         {
-             jumppower+= 5;
-         }
-         */
 
-
-        //on release we want to change the jumpower back to the minimum one. And launch the player?
+        //checking for coin streaks
+        if (score_ == 100)
+        {
+            CoinShout.SetActive(true);
+            CoinShout.GetComponent<TextController>().enabled = true;
+          
+        }
 
         //jump controller section
         if (Input.GetKeyDown(KeyCode.Mouse0) && clicks < 2)
@@ -170,58 +188,119 @@ public class SceneController : MonoBehaviour
             //setting the random makes the platforms not concurrent but makes them look slightly spaced. 
             int u = Random.Range(2, 6);
             int foil = Random.Range(0, 10);
-
+            float difficulty = Random.Range(difficultymultiplier, 0);
+            //Debug.Log(difficulty);
             //makes sure we spawn ahead of the last pillar with some variance to height and width
 
-            GameObject go = Instantiate(bottompillar, new Vector3(CurrentPositionOfLastPlatform.position.x + u, Random.Range(-2, 0), -4.5F), Quaternion.identity) as GameObject;
-
-            //set the last current position
-            CurrentPositionOfLastPlatform = go.transform;
-
-            //deciding if the pillar needs foliage or not
-
-            //Deprecated ^^ we decided that all pillars should have foilage to cover the edges 13/06/2016
-
-
-            //setting the vector to spawn at
-            Vector3 PO = new Vector3(go.transform.position.x, waterplain.transform.position.y + .2F, go.transform.position.z);
-
-            GameObject foila = Instantiate(foilagesrites, PO, Quaternion.identity) as GameObject;
-
-            foila.GetComponent<SpriteRenderer>().sprite = foliagesprites_[Random.Range(0, foliagesprites_.Length)];
-
-
-
-            if (!firstrun)
+            if (difficulty != difficultymultiplier)
             {
+                GameObject go = Instantiate(bottompillar, new Vector3(CurrentPositionOfLastPlatform.position.x + u, Random.Range(-2, 0), -4.5F), Quaternion.identity) as GameObject;
+                //set the last current position
+                CurrentPositionOfLastPlatform = go.transform;
+                //deciding if the pillar needs foliage or not
+
+                //Deprecated ^^ we decided that all pillars should have foilage to cover the edges 13/06/2016
+
+
+                //setting the vector to spawn at
+                Vector3 PO = new Vector3(go.transform.position.x, waterplain.transform.position.y + .2F, go.transform.position.z);
+
+                GameObject foila = Instantiate(foilagesrites, PO, Quaternion.identity) as GameObject;
+
+                foila.GetComponent<SpriteRenderer>().sprite = foliagesprites_[Random.Range(0, foliagesprites_.Length)];
+
+                //adding the foilage and chunk objects to a list to be deleted
+                ChunckList.Add(foila);
+                ChunckList.Add(go);
+
+            }
+            else
+            {
+                GameObject go = Instantiate(CrumblePillar, new Vector3(CurrentPositionOfLastPlatform.position.x + u, Random.Range(-2, 0), -4.5F), Quaternion.identity) as GameObject;
+                //set the last current position
+                CurrentPositionOfLastPlatform = go.transform;
+
+                //adding the chunk objects to a list to be deleted
+
+                ChunckList.Add(go);
+            }
+          
+
+            
+
+
+
+        }
+        for (int t = 0; t < 3; t++)
+        {
+
 
 
                 //spawn ruins - ideal is 18.5
+                // int ruinInt = Random.Range(-1, 1);
+                Vector3 ruinT = new Vector3(LastRuin.transform.position.x + 20, LastRuin.transform.position.y, LastRuin.transform.position.z);
+                GameObject ruin = Instantiate(Ruins[Random.Range(0, Ruins.Count)], ruinT, Quaternion.identity) as GameObject;
+                LastRuin = ruin.transform;
 
                 //spawn midground trees - 8
 
+                int MidInt = Random.Range(0, 10);
+                Vector3 MidT = new Vector3(LastMidGround.transform.position.x + 15, LastMidGround.transform.position.y, 8 + MidInt);
+                GameObject MidgroundTree = Instantiate(MidGroundTrees[Random.Range(0, MidGroundTrees.Count)], MidT, Quaternion.identity) as GameObject;
+                LastMidGround = MidgroundTree.transform;
+
                 //spawn foreground trees - 2.75
+                int ForInt = Random.Range(0, 2);
+                Vector3 ForT = new Vector3(LastForeGround.transform.position.x + 15, LastForeGround.transform.position.y, 2.75F + ForInt);
+                GameObject ForGroundTree = Instantiate(ForeGroundTrees[Random.Range(0, ForeGroundTrees.Count)], ForT, Quaternion.identity) as GameObject;
+                LastForeGround = ForGroundTree.transform;
 
                 //adding the foilage and chunk objects to a list to be deleted
-                foliagechunck.Add(foila);
-                ChunckList.Add(go);
+                BGList.Add(ruin);
+                BGList.Add(MidgroundTree);
+                BGList.Add(ForGroundTree);
+            
+
+            firstrun = false;
+
+            //checking to see if we are far awary from the background color and if a new one needs to be spawned. If so we spawn a new one. This is called every chunck rather
+            //than on update to keep things performance light
+
+            if (Vector2.Distance(this.transform.position, CurrentBackground.position) > 20)
+            {
+                Vector3 bT = new Vector3(CurrentBackground.position.x + 60, CurrentBackground.position.y, CurrentBackground.position.z);
+                GameObject b = Instantiate(backgroundcolor, bT, Quaternion.identity) as GameObject;
+                CurrentBackground = b.transform;
+                BGList.Add(b);
             }
         }
-
-        if (!firstrun)
-        {
-            //construct new vector for water
-         //   Vector3 p = new Vector3(LastWater.transform.position.x + 90, LastWater.transform.position.y, LastWater.transform.position.z);
-
-            //spawn new water plain
-          // GameObject wt = Instantiate(water, p, Quaternion.identity) as GameObject;
-          //  LastWater = wt.transform;
-        }
-        firstrun = false;
     }
 
     void OnTriggerEnter2D(Collider2D col)
     {
         col.gameObject.SetActive(false);
+    }
+
+    public void Dead()
+    {
+        //Reset
+        CurrentPositionOfLastPlatform = ORGPlatform;
+        LastForeGround = ORGLastFore;
+        LastMidGround = ORGLastMid;
+        LastRuin = ORGLastRuin;
+        CurrentBackground = ORGcurrentBG;
+        firstrun = true;
+
+        //destroying leftovers
+        foreach(GameObject go in BGList)
+        {
+            Destroy(go);
+        }
+
+       
+        foreach (GameObject t in ChunckList)
+        {
+            Destroy(t);
+        }
     }
 }

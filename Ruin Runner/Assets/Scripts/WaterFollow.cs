@@ -14,8 +14,9 @@ public class WaterFollow : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        Debug.Log("running");
+       // Debug.Log("running");
         Vector3 p = new Vector3(camera_.transform.position.x, transform.position.y, transform.position.z);
-        Vector3.SmoothDamp(transform.position, p, ref velocity, 1F);
+
+        transform.position = p;
 	}
 }
