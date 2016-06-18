@@ -12,7 +12,7 @@ public class DeadZone : MonoBehaviour
           if (col.gameObject.tag == "Player")
           {
           col.gameObject.transform.position = startpos.position;
-           Camera.main.GetComponent<SceneController>().Reset();
+       
             Camera.main.GetComponent<SceneController>().Dead();
             GetComponent<AudioSource>().Play();
     }

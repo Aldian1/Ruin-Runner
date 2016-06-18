@@ -11,11 +11,9 @@ public class SceneController : MonoBehaviour
     public List<GameObject> MidGroundTrees = new List<GameObject>();
     public List<GameObject> Ruins = new List<GameObject>();
 
+    public GameObject[] PillarTypes;
+
     public GameObject water;
-
-    public GameObject foilagesrites;
-
-    public Sprite[] foliagesprites_;
 
     public int ChunckSize;
 
@@ -32,7 +30,7 @@ public class SceneController : MonoBehaviour
 
     public GameObject doublepillar, bottompillar, waterplain,backgroundcolor,CrumblePillar;
 
-    public GameObject Bow, Player;
+    public GameObject Player;
 
     public float jumppower, rightjumppower;
 
@@ -54,6 +52,10 @@ public class SceneController : MonoBehaviour
     public int difficultymultiplier;
 
     public GameObject CoinShout;
+
+    public GameObject reset;
+
+    public bool dead;
 
     // Use this for initialization
     void Start()
@@ -78,48 +80,51 @@ public class SceneController : MonoBehaviour
 
         //setting the min jumpower incase someone fiddles in the editor with it
 
+        //after everything has been set up we spawn the world for the first time
+        SpawnWorld();
 
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        if (CurrentPositionOfLastPlatform != null)
+        if (!dead)
         {
-            //spawning the level ahead of us
-            if (Vector2.Distance(this.transform.position, CurrentPositionOfLastPlatform.transform.position) < 5)
+            if (CurrentPositionOfLastPlatform != null)
             {
-                SpawnWorld();
+                //spawning the level ahead of us
+                if (Vector2.Distance(this.transform.position, CurrentPositionOfLastPlatform.transform.position) < 5)
+                {
+                    SpawnWorld();
+                }
+            }
+            if (ChunckList[0] != null)
+            {
+                if (Vector2.Distance(this.transform.position, ChunckList[0].transform.position) > 30)
+                {
+                    Destroy(ChunckList[0].gameObject);
+                    ChunckList.Remove(ChunckList[0]);
+
+                }
+            }
+            if (BGList[0] != null)
+            {
+                if (Vector2.Distance(this.transform.position, BGList[0].transform.position) > 60)
+                {
+
+                    Destroy(BGList[0].gameObject);
+                    BGList.Remove(BGList[0]);
+                }
             }
         }
-        if (ChunckList[0] != null)
-        {
-            if (Vector2.Distance(this.transform.position, ChunckList[0].transform.position) > 30)
-            {
-                Destroy(ChunckList[0].gameObject);
-                ChunckList.Remove(ChunckList[0]);
-
-            }
-        }
-        if (BGList[0] != null)
-        {
-            if (Vector2.Distance(this.transform.position, BGList[0].transform.position) > 60)
-            {
-
-                Destroy(BGList[0].gameObject);
-                BGList.Remove(BGList[0]);
-            }
-        }
-
         score.text = score_.ToString();
 
         //checking for coin streaks
         if (score_ == 100)
         {
-            CoinShout.SetActive(true);
-            CoinShout.GetComponent<TextController>().enabled = true;
-          
+            Invoke("CoinShouter", .3F);
+            score_ += 1;
+
         }
 
         //jump controller section
@@ -160,20 +165,21 @@ public class SceneController : MonoBehaviour
 
     }
 
-    public void Reset()
+
+    //called when we click the reset button
+    public void ReloadScene()
     {
+        // GameObject.FindGameObjectWithTag("Stats").GetComponentInParent<MenuController>().ChangeScreen(false); 
+        SpawnWorld();
+        reset.SetActive(false);
         Player.transform.position = lastpos.position;
         multiplier = 1;
         bar.fillAmount = 1;
         multitext.text = multiplier.ToString() + "x";
         score_ = 0;
-        // Player.SetActive(true);
+        dead = false;
+        Time.timeScale = 1;
 
-    }
-
-    public void ReloadScene()
-    {
-        GameObject.FindGameObjectWithTag("Stats").GetComponentInParent<MenuController>().ChangeScreen(false); ;
     }
 
     public void SpawnWorld()
@@ -194,23 +200,38 @@ public class SceneController : MonoBehaviour
 
             if (difficulty != difficultymultiplier)
             {
-                GameObject go = Instantiate(bottompillar, new Vector3(CurrentPositionOfLastPlatform.position.x + u, Random.Range(-2, 0), -4.5F), Quaternion.identity) as GameObject;
+                GameObject go = Instantiate(PillarTypes[Random.Range(0,PillarTypes.Length)], new Vector3(CurrentPositionOfLastPlatform.position.x + u, Random.Range(-2, 0), -4.5F), Quaternion.identity) as GameObject;
                 //set the last current position
                 CurrentPositionOfLastPlatform = go.transform;
-                //deciding if the pillar needs foliage or not
 
-                //Deprecated ^^ we decided that all pillars should have foilage to cover the edges 13/06/2016
+                //get the foilage child
+                Transform gochild = go.transform.GetChild(3).transform;
+
+                //check if its the weird one or normal reeds
+                if(gochild.name == "Foil1")
+                {
+                    //setting the new vector3
+                    Vector3 PO = new Vector3(gochild.transform.position.x, waterplain.transform.position.y - .45F, gochild.transform.position.z);
+
+                    //get the foilage child and set its y value to match the waters
+                    go.transform.GetChild(3).transform.position = PO;
+                }
+                else
+                {
+                    //setting the new vector3
+                    Vector3 PO = new Vector3(gochild.transform.position.x, waterplain.transform.position.y + .45F, gochild.transform.position.z);
+
+                    //get the foilage child and set its y value to match the waters
+                    go.transform.GetChild(3).transform.position = PO;
+                }
+               
+
+               
 
 
-                //setting the vector to spawn at
-                Vector3 PO = new Vector3(go.transform.position.x, waterplain.transform.position.y + .2F, go.transform.position.z);
 
-                GameObject foila = Instantiate(foilagesrites, PO, Quaternion.identity) as GameObject;
 
-                foila.GetComponent<SpriteRenderer>().sprite = foliagesprites_[Random.Range(0, foliagesprites_.Length)];
 
-                //adding the foilage and chunk objects to a list to be deleted
-                ChunckList.Add(foila);
                 ChunckList.Add(go);
 
             }
@@ -251,7 +272,7 @@ public class SceneController : MonoBehaviour
 
                 //spawn foreground trees - 2.75
                 int ForInt = Random.Range(0, 2);
-                Vector3 ForT = new Vector3(LastForeGround.transform.position.x + 15, LastForeGround.transform.position.y, 2.75F + ForInt);
+                Vector3 ForT = new Vector3(LastForeGround.transform.position.x + 15, 6, 2.75F + ForInt);
                 GameObject ForGroundTree = Instantiate(ForeGroundTrees[Random.Range(0, ForeGroundTrees.Count)], ForT, Quaternion.identity) as GameObject;
                 LastForeGround = ForGroundTree.transform;
 
@@ -281,6 +302,8 @@ public class SceneController : MonoBehaviour
         col.gameObject.SetActive(false);
     }
 
+
+    //called when we die
     public void Dead()
     {
         //Reset
@@ -288,9 +311,11 @@ public class SceneController : MonoBehaviour
         LastForeGround = ORGLastFore;
         LastMidGround = ORGLastMid;
         LastRuin = ORGLastRuin;
+
+        Debug.Log(ORGPlatform);
         CurrentBackground = ORGcurrentBG;
         firstrun = true;
-
+        reset.SetActive(true);
         //destroying leftovers
         foreach(GameObject go in BGList)
         {
@@ -302,5 +327,25 @@ public class SceneController : MonoBehaviour
         {
             Destroy(t);
         }
+
+        while (ChunckList.Count > 0)
+        {
+            ChunckList.Remove(ChunckList[0]);
+        }
+
+        while (BGList.Count > 0)
+        {
+            BGList.Remove(BGList[0]);
+        }
+        dead = true;
+        Time.timeScale = 0;
+    }
+
+    //called when a coinstreak is reached
+    void CoinShouter()
+    {
+        CoinShout.SetActive(true);
+        CoinShout.GetComponent<TextController>().enabled = true;
+        
     }
 }

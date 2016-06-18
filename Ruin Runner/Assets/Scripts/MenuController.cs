@@ -39,7 +39,6 @@ public class MenuController : MonoBehaviour {
 
         //enable our scripts and deactivate particles/overlay
         camera_.GetComponent<SceneController>().enabled = true;
-        camera_.GetComponent<SceneController>().SpawnWorld();
         camera_.GetComponent<CineCamera>().enabled = true;
         particles.SetActive(false);
         overlaybutton.SetActive(false);
@@ -73,8 +72,7 @@ public class MenuController : MonoBehaviour {
         {
             GameoverCanvas.SetActive(false);
             change_ = false;
-            Camera.main.GetComponent<SceneController>().Reset();
-           // player.SetActive(true);
+                      // player.SetActive(true);
           
             return;
         }
