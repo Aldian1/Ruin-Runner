@@ -47,7 +47,7 @@ public class MenuController : MonoBehaviour {
         //turn our stats on
         stats.SetActive(true);
 
-        gameoverimage = GameoverCanvas.GetComponent<Image>();
+        //gameoverimage = GameoverCanvas.GetComponent<Image>();
 
         audio.Play();
 
@@ -56,27 +56,6 @@ public class MenuController : MonoBehaviour {
 
 
 
-    public void ChangeScreen(bool change)
-    {
-       
-        if(change)
-        {
-            //  Debug.Log("yh");
-            player.SetActive(false);
-            GameoverCanvas.SetActive(true);
-            change_ = true;
-          
-            return;
-        }
-        if(!change)
-        {
-            GameoverCanvas.SetActive(false);
-            change_ = false;
-                      // player.SetActive(true);
-          
-            return;
-        }
-        
-    }
+    
 
 }
