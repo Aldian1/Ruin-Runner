@@ -32,7 +32,7 @@ public class SceneController : MonoBehaviour
 
     public GameObject Player;
 
-    public float jumppower, rightjumppower;
+    public float jumppower,doublejumppower, rightjumppower;
 
     private Rigidbody2D rb;
 
@@ -94,48 +94,21 @@ public class SceneController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        //Getting the feetposition
         float p = Vector3.Distance(lastpos.position, Player.transform.position);
 
-        //Debug.Log(p);
+        //cant pass Vector3.Distance as an int so we cast it as an int to hard set it
         int i = (int)p;
+
+        //setting the text of the distance object to our int
         distancemeter.text = i.ToString() + "ft";
+
+        //setting distancefrom too i
         distancefrom = i;
-        if (!dead)
-        {
-          
-                if (CurrentPositionOfLastPlatform != null)
-                {
-                    //spawning the level ahead of us
-                    if (Vector2.Distance(this.transform.position, CurrentPositionOfLastPlatform.transform.position) < 5)
-                    {
-                        SpawnWorld();
-                    }
-                }
 
-                if (ChunckList.Count > 0 && ChunckList[0] != null)
-                {
-                    if (Vector2.Distance(this.transform.position, ChunckList[0].transform.position) > 30)
-                    {
-                        Destroy(ChunckList[0].gameObject);
-                        ChunckList.Remove(ChunckList[0]);
+        Movement();
+        DistanceChecking();
 
-                    }
-                }
-            
-                if (BGList.Count > 0)
-                {
-                    if (Vector2.Distance(this.transform.position, BGList[0].transform.position) > 60)
-                    {
-
-                        Destroy(BGList[0].gameObject);
-                        BGList.Remove(BGList[0]);
-                    }
-                }
-            
-            
-
-        }
         score.text = score_.ToString();
 
         //checking for coin streaks
@@ -146,44 +119,87 @@ public class SceneController : MonoBehaviour
 
         }
 
+  
+
+
+
+    }
+
+    void Movement()
+    {
+
         //jump controller section
         if (Input.GetKeyDown(KeyCode.Mouse0) && clicks < 2)
         {
-            rb.AddRelativeForce(Vector2.up * jumppower);
-            rb.AddRelativeForce(Vector2.right * rightjumppower);
-            clicks += 1;
-            multiplier += 1;
-          //  bar.fillAmount = 1;
-          //  multitext.text = multiplier.ToString() + "x";
+          
+            if(clicks == 0)
+            {
+                Debug.Log("poo");
+
+                //doublejumppower
+                rb.AddForce(new Vector2(0, doublejumppower));
+                rb.velocity = new Vector2(rb.velocity.x, 0);
+                rb.AddForce(Vector2.right * rightjumppower);
+                clicks += 1;
+                return;
+            }
+
+            if(clicks == 1)
+            {
+                rb.AddForce(Vector2.up * jumppower);
+                rb.velocity = new Vector2(rb.velocity.x, 0);
+                rb.AddForce(Vector2.right * 50);
+                clicks += 1;
+                Debug.Log("poo2");
+                return;
+            
+            }
+          
+
 
 
         }
 
-        //trying the combo system based on clicks first
-
-
-
     }
 
- /*  IEnumerator MultiTimer()
-  //  {
-     //   while (bar.fillAmount > 0)
-      //  {
-     //       bar.fillAmount -= 0.02F;
-      //      yield return new WaitForSeconds(.05F);
-     //   }
-
-        if (bar.fillAmount <= 0)
+    void DistanceChecking() {
+        if (!dead)
         {
-            multiplier = 0;
-            bar.fillAmount = 1;
-            multitext.text = multiplier.ToString() + "x";
-            StartCoroutine("MultiTimer");
+
+            if (CurrentPositionOfLastPlatform != null)
+            {
+                //spawning the level ahead of us
+                if (Vector2.Distance(this.transform.position, CurrentPositionOfLastPlatform.transform.position) < 5)
+                {
+                    SpawnWorld();
+                }
+            }
+
+            if (ChunckList.Count > 0 && ChunckList[0] != null)
+            {
+                if (Vector2.Distance(this.transform.position, ChunckList[0].transform.position) > 30)
+                {
+                    Destroy(ChunckList[0].gameObject);
+                    ChunckList.Remove(ChunckList[0]);
+
+                }
+            }
+
+            if (BGList.Count > 0)
+            {
+                if (Vector2.Distance(this.transform.position, BGList[0].transform.position) > 60)
+                {
+
+                    Destroy(BGList[0].gameObject);
+                    BGList.Remove(BGList[0]);
+                }
+            }
+
+
 
         }
-
     }
-    */
+
 
     //called when we click the reset button
     public void ReloadScene()
@@ -425,4 +441,6 @@ public class SceneController : MonoBehaviour
 
         reset.transform.GetChild(2).GetChild(1).GetComponent<Text>().text = distancefrom.ToString() + "ft";
     }
+
+
 }
