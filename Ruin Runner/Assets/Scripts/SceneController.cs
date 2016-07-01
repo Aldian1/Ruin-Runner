@@ -23,16 +23,16 @@ public class SceneController : MonoBehaviour
 
 
 
-    public Transform CurrentPositionOfLastPlatform, LastForeGround, LastMidGround, LastRuin,CurrentBackground;
+    public Transform CurrentPositionOfLastPlatform, LastForeGround, LastMidGround, LastRuin, CurrentBackground;
 
-    private Transform ORGPlatform,ORGLastFore,ORGLastMid,ORGLastRuin,ORGcurrentBG;
+    private Transform ORGPlatform, ORGLastFore, ORGLastMid, ORGLastRuin, ORGcurrentBG;
 
 
-    public GameObject doublepillar, bottompillar, waterplain,backgroundcolor,CrumblePillar,SlippyPillar;
+    public GameObject doublepillar, bottompillar, waterplain, backgroundcolor, CrumblePillar, SlippyPillar;
 
     public GameObject Player;
 
-    public float jumppower,doublejumppower, rightjumppower;
+    public float jumppower, doublejumppower, rightjumppower;
 
     private Rigidbody2D rb;
 
@@ -60,10 +60,14 @@ public class SceneController : MonoBehaviour
     private Text distancemeter;
 
     private int distancefrom;
+
+    private bool movement;
+
+    private float temps;
     // Use this for initialization
     void Start()
     {
-      
+        movement = true;
         distancemeter = GameObject.FindGameObjectWithTag("Distance").GetComponent<Text>();
 
         //setting our originals
@@ -72,14 +76,14 @@ public class SceneController : MonoBehaviour
         ORGLastMid = LastMidGround;
         ORGLastRuin = LastRuin;
         ORGcurrentBG = CurrentBackground;
-      
-        //loading area
-     //   bar = GameObject.FindGameObjectWithTag("MovingBar").GetComponent<Image>();
-        rb = Player.GetComponent<Rigidbody2D>();
-       // multitext = bar.GetComponentInChildren<Text>();
 
- 
-      
+        //loading area
+        //   bar = GameObject.FindGameObjectWithTag("MovingBar").GetComponent<Image>();
+        rb = Player.GetComponent<Rigidbody2D>();
+        // multitext = bar.GetComponentInChildren<Text>();
+
+
+
         firstrun = true;
 
 
@@ -105,8 +109,10 @@ public class SceneController : MonoBehaviour
 
         //setting distancefrom too i
         distancefrom = i;
-
-        Movement();
+        if (movement)
+        {
+            Movement();
+        }
         DistanceChecking();
 
         score.text = score_.ToString();
@@ -119,7 +125,7 @@ public class SceneController : MonoBehaviour
 
         }
 
-  
+
 
 
 
@@ -128,41 +134,83 @@ public class SceneController : MonoBehaviour
     void Movement()
     {
 
-        //jump controller section
-        if (Input.GetKeyDown(KeyCode.Mouse0) && clicks < 2)
+        //checking the time of the click
+        if (Input.GetKeyUp(KeyCode.Mouse0) && clicks < 2)
         {
-          
-            if(clicks == 0)
-            {
-                Debug.Log("poo");
-
-                //doublejumppower
-                rb.AddForce(new Vector2(0, doublejumppower));
-                rb.velocity = new Vector2(rb.velocity.x, 0);
-                rb.AddForce(Vector2.right * rightjumppower);
-                clicks += 1;
-                return;
-            }
-
-            if(clicks == 1)
-            {
-                rb.AddForce(Vector2.up * jumppower);
-                rb.velocity = new Vector2(rb.velocity.x, 0);
-                rb.AddForce(Vector2.right * 50);
-                clicks += 1;
-                Debug.Log("poo2");
-                return;
-            
-            }
-          
-
-
-
+            temps = Time.time;
         }
 
+
+
+        //jump controller section
+
+        //short click
+        if (Input.GetKeyDown(KeyCode.Mouse0) && clicks < 2)
+        {
+
+            Debug.Log(Time.time - temps);
+            //long click
+            if (Input.GetKey(KeyCode.Mouse0) && Time.time - temps > 1F)
+            {
+                if (clicks == 0)
+                {
+
+
+                    //doublejumppower
+                    rb.AddForce(new Vector2(0, doublejumppower));
+                    rb.velocity = new Vector2(rb.velocity.x, 0);
+                    rb.AddForce(Vector2.right * rightjumppower);
+                    clicks += 1;
+                    return;
+                }
+
+                if (clicks == 1)
+                {
+                    rb.AddForce(Vector2.up * jumppower);
+                    rb.velocity = new Vector2(rb.velocity.x, 0);
+                    rb.AddForce(Vector2.right * 50);
+                    clicks += 1;
+
+                    return;
+
+                }
+            }
+
+                //short click
+                if (Input.GetKey(KeyCode.Mouse0) && Time.time - temps < 1F)
+            {
+                if (clicks == 0)
+                {
+
+
+                    //doublejumppower
+                    rb.AddForce(new Vector2(0, doublejumppower / 2));
+                    rb.velocity = new Vector2(rb.velocity.x, 0);
+                    rb.AddForce(Vector2.right * rightjumppower / 2);
+                    clicks += 1;
+                    return;
+                }
+
+                if (clicks == 1)
+                {
+                    rb.AddForce(Vector2.up * jumppower);
+                    rb.velocity = new Vector2(rb.velocity.x, 0);
+                    rb.AddForce(Vector2.right * 50);
+                    clicks += 1;
+
+                    return;
+
+                }
+            }
+
+            
+            
+           
+        }
     }
 
-    void DistanceChecking() {
+    void DistanceChecking()
+    {
         if (!dead)
         {
 
@@ -205,22 +253,41 @@ public class SceneController : MonoBehaviour
     public void ReloadScene()
     {
         // GameObject.FindGameObjectWithTag("Stats").GetComponentInParent<MenuController>().ChangeScreen(false); 
-        SpawnWorld();
-        reset.SetActive(false);
         Player.transform.position = lastpos.position;
+
+        reset.SetActive(false);
+
+
+
+        ShoppingIsDone();
+    }
+
+
+
+    public void ShoppingIsDone()
+    {
+
         multiplier = 1;
-      //  bar.fillAmount = 1;
-       // multitext.text = multiplier.ToString() + "x";
+        //  bar.fillAmount = 1;
+        // multitext.text = multiplier.ToString() + "x";
         score_ = 0;
         dead = false;
         score.gameObject.transform.parent.parent.gameObject.SetActive(true);
-        Time.timeScale = 1;
+
 
         if (GameObject.FindGameObjectWithTag("OverLayImage"))
         {
             GameObject.FindGameObjectWithTag("OverLayImage").SetActive(false);
         }
+
+        movement = true;
+        Player.GetComponent<Player_Controller>().enabled = true;
+
+
+        SpawnWorld();
     }
+
+
 
     public void SpawnWorld()
     {
@@ -244,7 +311,7 @@ public class SceneController : MonoBehaviour
 
             if (difficulty != difficultymultiplier)
             {
-                GameObject go = Instantiate(PillarTypes[Random.Range(0,PillarTypes.Length)], new Vector3(CurrentPositionOfLastPlatform.position.x + u, Random.Range(-2, 0), -4.5F), Quaternion.identity) as GameObject;
+                GameObject go = Instantiate(PillarTypes[Random.Range(0, PillarTypes.Length)], new Vector3(CurrentPositionOfLastPlatform.position.x + u, Random.Range(-2, 0), -4.5F), Quaternion.identity) as GameObject;
                 //set the last current position
                 CurrentPositionOfLastPlatform = go.transform;
 
@@ -252,7 +319,7 @@ public class SceneController : MonoBehaviour
                 Transform gochild = go.transform.GetChild(3).transform;
 
                 //check if its the weird one or normal reeds
-                if(gochild.name == "Foil1")
+                if (gochild.name == "Foil1")
                 {
                     //setting the new vector3
                     Vector3 PO = new Vector3(gochild.transform.position.x, waterplain.transform.position.y - .45F, gochild.transform.position.z);
@@ -263,14 +330,14 @@ public class SceneController : MonoBehaviour
                 else
                 {
 
-                  
+
 
                     //setting the new vector3
                     Vector3 PO = new Vector3(gochild.transform.position.x, waterplain.transform.position.y + .55F, gochild.transform.position.z);
 
                     //get the foilage child and set its y value to match the waters
                     go.transform.GetChild(3).transform.position = PO;
-                }           
+                }
                 ChunckList.Add(go);
 
             }
@@ -280,7 +347,7 @@ public class SceneController : MonoBehaviour
                 //set which type to spawn
                 int type = Random.Range(0, 2);
 
-              //  Debug.Log(type);
+                //  Debug.Log(type);
 
                 if (type == 1)
                 {
@@ -305,12 +372,12 @@ public class SceneController : MonoBehaviour
                     ChunckList.Add(go);
                 }
 
-                
-               
-            }
-          
 
-           
+
+            }
+
+
+
 
 
         }
@@ -320,30 +387,30 @@ public class SceneController : MonoBehaviour
 
 
 
-                //spawn ruins - ideal is 18.5
-                // int ruinInt = Random.Range(-1, 1);
-                Vector3 ruinT = new Vector3(LastRuin.transform.position.x + 20, LastRuin.transform.position.y, LastRuin.transform.position.z);
-                GameObject ruin = Instantiate(Ruins[Random.Range(0, Ruins.Count)], ruinT, Quaternion.identity) as GameObject;
-                LastRuin = ruin.transform;
+            //spawn ruins - ideal is 18.5
+            // int ruinInt = Random.Range(-1, 1);
+            Vector3 ruinT = new Vector3(LastRuin.transform.position.x + 20, LastRuin.transform.position.y, LastRuin.transform.position.z);
+            GameObject ruin = Instantiate(Ruins[Random.Range(0, Ruins.Count)], ruinT, Quaternion.identity) as GameObject;
+            LastRuin = ruin.transform;
 
-                //spawn midground trees - 8
+            //spawn midground trees - 8
 
-                int MidInt = Random.Range(0, 8);
-                Vector3 MidT = new Vector3(LastMidGround.transform.position.x + 15, 6.5F, 8 + MidInt);
-                GameObject MidgroundTree = Instantiate(MidGroundTrees[Random.Range(0, MidGroundTrees.Count)], MidT, Quaternion.identity) as GameObject;
-                LastMidGround = MidgroundTree.transform;
+            int MidInt = Random.Range(0, 8);
+            Vector3 MidT = new Vector3(LastMidGround.transform.position.x + 15, 6.5F, 8 + MidInt);
+            GameObject MidgroundTree = Instantiate(MidGroundTrees[Random.Range(0, MidGroundTrees.Count)], MidT, Quaternion.identity) as GameObject;
+            LastMidGround = MidgroundTree.transform;
 
-                //spawn foreground trees - 2.75
-                int ForInt = Random.Range(0, 2);
-                Vector3 ForT = new Vector3(LastForeGround.transform.position.x + 15, 4.7F, 1F + ForInt);
-                GameObject ForGroundTree = Instantiate(ForeGroundTrees[Random.Range(0, ForeGroundTrees.Count)], ForT, Quaternion.identity) as GameObject;
-                LastForeGround = ForGroundTree.transform;
+            //spawn foreground trees - 2.75
+            int ForInt = Random.Range(0, 2);
+            Vector3 ForT = new Vector3(LastForeGround.transform.position.x + 15, 4.7F, 1F + ForInt);
+            GameObject ForGroundTree = Instantiate(ForeGroundTrees[Random.Range(0, ForeGroundTrees.Count)], ForT, Quaternion.identity) as GameObject;
+            LastForeGround = ForGroundTree.transform;
 
-                //adding the foilage and chunk objects to a list to be deleted
-                BGList.Add(ruin);
-                BGList.Add(MidgroundTree);
-                BGList.Add(ForGroundTree);
-            
+            //adding the foilage and chunk objects to a list to be deleted
+            BGList.Add(ruin);
+            BGList.Add(MidgroundTree);
+            BGList.Add(ForGroundTree);
+
 
             firstrun = false;
 
@@ -369,6 +436,11 @@ public class SceneController : MonoBehaviour
     //called when we die
     public void Dead()
     {
+        //turn off control components
+        movement = false;
+        Player.GetComponent<Player_Controller>().enabled = false;
+        Player.GetComponent<Animator>().SetBool("Land", true);
+
         //Reset
         CurrentPositionOfLastPlatform = ORGPlatform;
         LastForeGround = ORGLastFore;
@@ -386,7 +458,7 @@ public class SceneController : MonoBehaviour
             Destroy(go);
         }
 
-       
+
         foreach (GameObject t in ChunckList)
         {
             Destroy(t);
@@ -402,8 +474,8 @@ public class SceneController : MonoBehaviour
             BGList.Remove(BGList[0]);
         }
         dead = true;
-    
-        Time.timeScale = 0;
+
+
 
         SendMenu();
     }
@@ -413,24 +485,24 @@ public class SceneController : MonoBehaviour
     {
         CoinShout.SetActive(true);
         CoinShout.GetComponent<TextController>().enabled = true;
-        
+
     }
 
     void SendMenu()
     {
         score.gameObject.transform.parent.parent.gameObject.SetActive(false);
 
-        if(PlayerPrefs.GetInt("MaxDistance") < distancefrom)
+        if (PlayerPrefs.GetInt("MaxDistance") < distancefrom)
         {
             PlayerPrefs.SetInt("MaxDistance", distancefrom);
-          
+
         }
 
         int coin = PlayerPrefs.GetInt("Coins");
 
         PlayerPrefs.SetInt("Coins", (int)score_ + coin);
         PlayerPrefs.Save();
-        reset.transform.GetChild(2).GetChild(2).GetComponent<StatsLoader>().enabled = true;
+        reset.transform.GetChild(0).GetChild(2).GetChild(2).GetComponent<StatsLoader>().enabled = true;
 
         GameObject go = GameObject.FindGameObjectWithTag("CoinStat");
         go.GetComponent<StatsLoader>().enabled = true;
@@ -439,7 +511,7 @@ public class SceneController : MonoBehaviour
         coinplus.GetComponent<StatsLoader>().coinplus = (int)score_;
         coinplus.GetComponent<StatsLoader>().enabled = true;
 
-        reset.transform.GetChild(2).GetChild(1).GetComponent<Text>().text = distancefrom.ToString() + "ft";
+        reset.transform.GetChild(0).GetChild(2).GetChild(1).GetComponent<Text>().text = distancefrom.ToString() + "ft";
     }
 
 

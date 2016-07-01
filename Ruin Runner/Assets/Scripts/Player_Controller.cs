@@ -51,7 +51,7 @@ public class Player_Controller : MonoBehaviour {
     {
         if (onground)
         {
-            if (Input.GetKeyDown(KeyCode.Mouse0) && switcher < 2)
+            if (Input.GetKeyUp(KeyCode.Mouse0) && switcher < 2)
             {
                 ar.SetBool("Land", false);
                 ar.SetBool("Jump", true);
@@ -59,7 +59,7 @@ public class Player_Controller : MonoBehaviour {
                 return;
             }
         }
-        if (Input.GetKeyUp(KeyCode.Mouse0))
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             ar.SetBool("Land", false);
             ar.SetBool("Jump", false);

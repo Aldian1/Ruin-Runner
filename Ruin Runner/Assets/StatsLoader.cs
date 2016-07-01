@@ -16,6 +16,18 @@ public class StatsLoader : MonoBehaviour
     };
 
     public type Type_;
+    void Start()
+    {
+        if (this.tag == "Shop")
+        {
+            if (Type_ == type.coin)
+            {
+                int i = PlayerPrefs.GetInt("Coins");
+                GetComponent<Text>().text = i.ToString();
+            }
+        }
+
+    }
     void OnEnable()
     {
         if (Type_ == type.distance)
