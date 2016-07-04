@@ -1,15 +1,18 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 using UnityEngine.Advertisements;
 
 
 public class ShopController : MonoBehaviour {
 
-    public GameObject MainSectionUI, ShopSection,CoinAmount;
+    public GameObject MainSectionUI, ShopSection,CoinAmount,ShopCam;
 
-	// Use this for initialization
-	void Start () {
-	
+    public Transform oldcampos;
+
+    // Use this for initialization
+    void Start () {
+        oldcampos = Camera.main.GetComponent<CineCamera>().target.transform;
 	}
 	
 	// Update is called once per frame
@@ -30,6 +33,7 @@ public class ShopController : MonoBehaviour {
     {
         MainSectionUI.SetActive(false);
         ShopSection.SetActive(true);
+        CoinAmount.GetComponent<Text>().text = PlayerPrefs.GetInt("Coins").ToString();
         TweenShop(true);
     }
 
@@ -37,7 +41,7 @@ public class ShopController : MonoBehaviour {
     {
         if(changestate)
         {
-
+            Camera.main.GetComponent<CineCamera>().target = ShopCam.transform;
         }
         if(!changestate)
         {
