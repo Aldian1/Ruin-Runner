@@ -490,6 +490,9 @@ public class SceneController : MonoBehaviour
 
     void SendMenu()
     {
+
+		reset.transform.GetChild (0).gameObject.SetActive (true);
+
         score.gameObject.transform.parent.parent.gameObject.SetActive(false);
 
         if (PlayerPrefs.GetInt("MaxDistance") < distancefrom)
