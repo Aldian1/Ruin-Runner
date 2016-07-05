@@ -17,8 +17,10 @@ public class DeadZone : MonoBehaviour
             ar.SetBool("Jump",false);
             ar.SetBool("Air",false);
             ar.SetBool("Land",true);
-  
-            
+
+            //disable our trail renderer;
+            col.transform.GetChild(2).GetComponent<TrailRenderer>().enabled = false;
+
             Camera.main.GetComponent<SceneController>().Dead();
             GetComponent<AudioSource>().Play();
     }

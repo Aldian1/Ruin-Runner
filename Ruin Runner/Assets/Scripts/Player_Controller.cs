@@ -17,7 +17,7 @@ public class Player_Controller : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D col)
 	{
-
+        
         Debug.Log(col.gameObject.tag);
         //Debug.Log ("Collided");
         if (this.enabled == true)

@@ -150,7 +150,7 @@ public class SceneController : MonoBehaviour
 
             Debug.Log(Time.time - temps);
             //long click
-            if (Input.GetKey(KeyCode.Mouse0) && Time.time - temps > 1F)
+            if (Input.GetKey(KeyCode.Mouse0) /*&& Time.time - temps > 1F*/)
             {
                 if (clicks == 0)
                 {
@@ -267,9 +267,6 @@ public class SceneController : MonoBehaviour
     public void ShoppingIsDone()
     {
 
-        multiplier = 1;
-        //  bar.fillAmount = 1;
-        // multitext.text = multiplier.ToString() + "x";
         score_ = 0;
         dead = false;
         score.gameObject.transform.parent.parent.gameObject.SetActive(true);
@@ -280,8 +277,10 @@ public class SceneController : MonoBehaviour
             GameObject.FindGameObjectWithTag("OverLayImage").SetActive(false);
         }
 
+        //re enabling everything
         movement = true;
         Player.GetComponent<Player_Controller>().enabled = true;
+        Player.transform.GetChild(2).GetComponent<TrailRenderer>().enabled = true;
 
 
         SpawnWorld();

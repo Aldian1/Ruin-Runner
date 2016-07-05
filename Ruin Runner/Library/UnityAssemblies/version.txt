@@ -1,5 +1,5 @@
 5.3.5f1:2.2.0.0
-WebPlayer
+Android
 E:/Program Files X86/Unity3D/Editor/Data/Managed/UnityEngine.dll
 E:/Program Files X86/Unity3D/Editor/Data/UnityExtensions/Unity/Advertisements/UnityEngine.Advertisements.dll
 E:/Program Files X86/Unity3D/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll
