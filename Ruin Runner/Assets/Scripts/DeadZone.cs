@@ -20,7 +20,7 @@ public class DeadZone : MonoBehaviour
 
             //disable our trail renderer;
             col.transform.GetChild(2).GetComponent<TrailRenderer>().enabled = false;
-
+            col.GetComponent<Player_Controller>().Reset();
             Camera.main.GetComponent<SceneController>().Dead();
             GetComponent<AudioSource>().Play();
     }

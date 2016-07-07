@@ -4,7 +4,7 @@ using System.Collections;
 
 public class MenuController : MonoBehaviour {
 
-    public GameObject stats, menuoverlay,overlaybutton,GameoverCanvas;
+    public GameObject stats, menuoverlay,overlaybutton,GameoverCanvas,MAgnetOverlay,potionicon;
     public Image gameoverimage;
     public GameObject camera_;
     public GameObject particles;
@@ -26,10 +26,10 @@ public class MenuController : MonoBehaviour {
         camera_ = Camera.main.gameObject;
         overlaybutton = GameObject.Find("Button");
         audio = GetComponent<AudioSource>();
-       
-        
-     
-	}
+        PlayerPrefs.SetInt("MagPower", 10);
+
+
+    }
 
     public void MoveOn()
     {
@@ -43,7 +43,8 @@ public class MenuController : MonoBehaviour {
         particles.SetActive(false);
         overlaybutton.SetActive(false);
         pl.enabled = true;
-
+        MAgnetOverlay.SetActive(true);
+        potionicon.SetActive(true);
         //turn our stats on
         stats.SetActive(true);
 

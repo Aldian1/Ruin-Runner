@@ -64,6 +64,10 @@ public class SceneController : MonoBehaviour
     private bool movement;
 
     private float temps;
+
+
+
+
     // Use this for initialization
     void Start()
     {
@@ -109,10 +113,7 @@ public class SceneController : MonoBehaviour
 
         //setting distancefrom too i
         distancefrom = i;
-        if (movement)
-        {
-            Movement();
-        }
+
         DistanceChecking();
 
         score.text = score_.ToString();
@@ -131,83 +132,7 @@ public class SceneController : MonoBehaviour
 
     }
 
-    void Movement()
-    {
 
-        //checking the time of the click
-        if (Input.GetKeyUp(KeyCode.Mouse0) && clicks < 2)
-        {
-            temps = Time.time;
-        }
-
-
-
-        //jump controller section
-
-        //short click
-        if (Input.GetKeyDown(KeyCode.Mouse0) && clicks < 2)
-        {
-
-            Debug.Log(Time.time - temps);
-            //long click
-            if (Input.GetKey(KeyCode.Mouse0) /*&& Time.time - temps > 1F*/)
-            {
-                if (clicks == 0)
-                {
-
-
-                    //doublejumppower
-                    rb.AddForce(new Vector2(0, doublejumppower));
-                    rb.velocity = new Vector2(rb.velocity.x, 0);
-                    rb.AddForce(Vector2.right * rightjumppower);
-                    clicks += 1;
-                    return;
-                }
-
-                if (clicks == 1)
-                {
-                    rb.AddForce(Vector2.up * jumppower);
-                    rb.velocity = new Vector2(rb.velocity.x, 0);
-                    rb.AddForce(Vector2.right * 50);
-                    clicks += 1;
-
-                    return;
-
-                }
-            }
-
-                //short click
-                if (Input.GetKey(KeyCode.Mouse0) && Time.time - temps < 1F)
-            {
-                if (clicks == 0)
-                {
-
-
-                    //doublejumppower
-                    rb.AddForce(new Vector2(0, doublejumppower / 2));
-                    rb.velocity = new Vector2(rb.velocity.x, 0);
-                    rb.AddForce(Vector2.right * rightjumppower / 2);
-                    clicks += 1;
-                    return;
-                }
-
-                if (clicks == 1)
-                {
-                    rb.AddForce(Vector2.up * jumppower);
-                    rb.velocity = new Vector2(rb.velocity.x, 0);
-                    rb.AddForce(Vector2.right * 50);
-                    clicks += 1;
-
-                    return;
-
-                }
-            }
-
-            
-            
-           
-        }
-    }
 
     void DistanceChecking()
     {
@@ -310,6 +235,7 @@ public class SceneController : MonoBehaviour
 
             if (difficulty != difficultymultiplier)
             {
+               
                 GameObject go = Instantiate(PillarTypes[Random.Range(0, PillarTypes.Length)], new Vector3(CurrentPositionOfLastPlatform.position.x + u, Random.Range(-2, 0), -4.5F), Quaternion.identity) as GameObject;
                 //set the last current position
                 CurrentPositionOfLastPlatform = go.transform;
