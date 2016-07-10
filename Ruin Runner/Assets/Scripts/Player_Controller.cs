@@ -10,7 +10,7 @@ public class Player_Controller : MonoBehaviour
     public int switcher;
     public bool onground;
 
-    public Sprite MagnetItem;
+    public Sprite MagnetItem, PotionItem_;
 
     public GameObject HoldableItem, Cloud, potitem;
 
@@ -123,6 +123,7 @@ public class Player_Controller : MonoBehaviour
     {
         if (item.name == "MagnetItem" && PlayerPrefs.GetInt("MagnetAmount") > 0)
         {
+            HoldableItem.SetActive(true);
             magtime = PlayerPrefs.GetInt("MagPower");
             MagnetOn = true;
             item.SetActive(false);
@@ -130,17 +131,21 @@ public class Player_Controller : MonoBehaviour
             TimerText.enabled = true;
             mgitem = item;
             PlayerPrefs.SetInt("MagnetAmount", PlayerPrefs.GetInt("MagnetAmount") - 1);
+            HoldableItem.GetComponent<SpriteRenderer>().sprite = MagnetItem;
 
+            PlayerPrefs.Save();
         }
         
-        if(item.name == "PotionItem" && PlayerPrefs.GetInt("PotionAmount") > 0)
+        if(item.name == "PotionItem" && PlayerPrefs.GetInt("PotAmount") > 0)
         {
+            HoldableItem.SetActive(true);
             item.SetActive(false);
-            magtime = PlayerPrefs.GetInt("PotionTime");
+            magtime = PlayerPrefs.GetInt("PotionPower");
             TimerText.enabled = true;
             mgitem.SetActive(false);
             Time.timeScale = .5F;
             StartCoroutine("ItemTimer", item);
+            HoldableItem.GetComponent<SpriteRenderer>().sprite = PotionItem_;
         }
 
             PlayerPrefs.Save();
@@ -222,5 +227,6 @@ public class Player_Controller : MonoBehaviour
         {
             mgitem.SetActive(true);
         }
+        HoldableItem.SetActive(false);
     }
 }

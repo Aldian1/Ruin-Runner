@@ -365,7 +365,7 @@ public class SceneController : MonoBehaviour
         movement = false;
         Player.GetComponent<Player_Controller>().enabled = false;
         Player.GetComponent<Animator>().SetBool("Land", true);
-
+        Player.GetComponent<Rigidbody2D>().isKinematic = false;
         //Reset
         CurrentPositionOfLastPlatform = ORGPlatform;
         LastForeGround = ORGLastFore;

@@ -5,27 +5,36 @@ using System.Collections;
 public class DeadZone : MonoBehaviour
 {
     public Transform startpos;
+    public GameObject AngelPadChecker;
+
     void OnTriggerEnter2D(Collider2D col)
     {
         //Debug.Log("working");
 
-          if (col.gameObject.tag == "Player")
-          {
-          col.gameObject.transform.position = startpos.position;
+        if (col.gameObject.tag == "Player")
+        {
+
 
             Animator ar = col.GetComponent<Animator>();
-            ar.SetBool("Jump",false);
-            ar.SetBool("Air",false);
-            ar.SetBool("Land",true);
+            ar.SetBool("Jump", false);
+            ar.SetBool("Air", false);
+            ar.SetBool("Land", true);
 
             //disable our trail renderer;
-            col.transform.GetChild(2).GetComponent<TrailRenderer>().enabled = false;
-            col.GetComponent<Player_Controller>().Reset();
-            Camera.main.GetComponent<SceneController>().Dead();
+            AngelPadChecker.GetComponent<AngelPowerUpController>().PlayerDied();
+
+
             GetComponent<AudioSource>().Play();
+            col.GetComponent<Rigidbody2D>().isKinematic = true;
+        }
     }
 
-       // GameObject.FindGameObjectWithTag("Stats").GetComponentInParent<MenuController>().ChangeScreen(true); ;
+   public void ReturnPlayer(GameObject player)
+    {
+        player.gameObject.transform.position = startpos.position;
+        player.gameObject.GetComponent<Rigidbody2D>().isKinematic = false;
     }
-
 }
+
+
+

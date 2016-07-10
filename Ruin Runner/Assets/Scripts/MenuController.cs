@@ -26,7 +26,7 @@ public class MenuController : MonoBehaviour {
         camera_ = Camera.main.gameObject;
         overlaybutton = GameObject.Find("Button");
         audio = GetComponent<AudioSource>();
-        PlayerPrefs.SetInt("MagPower", 10);
+      
 
 
     }
