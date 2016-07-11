@@ -21,8 +21,12 @@ public class ShopController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-     
 
+//		Advertisement.Initialize ("1089402", true);
+		ShowAdWhenReady ();
+
+     
+		PlayerPrefs.DeleteAll ();
         gold = PlayerPrefs.GetInt("Coins");
         CoinAmount.GetComponent<Text>().text = gold.ToString();
 
@@ -33,13 +37,12 @@ public class ShopController : MonoBehaviour
         PotionBuyText.GetComponent<Text>().text = PotionBuy.ToString();
         PotionUpgradeText.GetComponent<Text>().text = PotionUpgradeCost.ToString();
 
-        PlayerPrefs.SetInt("Coins", 10000);
-
+        
 
         //load the magnet and potion powers decide if anything needs to be changed
         int i = PlayerPrefs.GetInt("MagPower");
         int u = PlayerPrefs.GetInt("PotionPower");
-        Debug.Log(i);
+       // Debug.Log(i);
         if (i == 20)
         {
             //weve upgraded once before
@@ -122,6 +125,7 @@ public class ShopController : MonoBehaviour
         if (activation)
         {
             OpenShop();
+			ShowAdWhenReady ();
         }
 
         if (!activation)
@@ -389,7 +393,14 @@ public class ShopController : MonoBehaviour
         }
         }
 
+	void ShowAdWhenReady()
+	{
+		
 
+		//	Advertisement.Show ();
+			//Debug.Log ("ShowAdd");
+
+	}
 
     }
 

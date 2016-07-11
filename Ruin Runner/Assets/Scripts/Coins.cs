@@ -24,9 +24,7 @@ public class Coins : MonoBehaviour {
         {
             if(Vector2.Distance(this.transform.position, Player.transform.position) < 2)
             {
-                float newPositionx = Mathf.SmoothDamp(transform.position.x, Player.transform.position.x, ref yVelocity, smoothTime);
-                //float newPositiony = Mathf.SmoothDamp(transform.position.y, Player.transform.position.y, ref yVelocity, smoothTime);
-                transform.position = new Vector3(newPositionx, transform.position.y, transform.position.z);
+				transform.position = Vector3.Lerp (transform.position, Player.transform.position, .1F);
             }
         }
     }

@@ -25,7 +25,8 @@ public class DeadZone : MonoBehaviour
 
 
             GetComponent<AudioSource>().Play();
-            col.GetComponent<Rigidbody2D>().isKinematic = true;
+           
+			Debug.Log ("Player");
         }
     }
 

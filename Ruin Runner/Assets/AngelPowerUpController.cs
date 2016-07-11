@@ -24,10 +24,12 @@ public class AngelPowerUpController : MonoBehaviour
         {
             AngelPadPrompt();
             player.GetComponent<Player_Controller>().enabled = false;
+			player.GetComponent<Rigidbody2D>().isKinematic = true;
         }
         else
         {
             PlayerIsDead();
+			player.GetComponent<Rigidbody2D>().isKinematic = false;
 
         }
     }
@@ -69,6 +71,8 @@ public class AngelPowerUpController : MonoBehaviour
     public void AngelUse()
     {
         //player has pressed the button to use the angelpad
+		PlayerPrefs.SetInt("AngelAmount",PlayerPrefs.GetInt("AngelAmount") - 1);
+
         StopAllCoroutines();
         //start playermovement
         player.GetComponent<Player_Controller>().enabled = true;
@@ -79,6 +83,8 @@ public class AngelPowerUpController : MonoBehaviour
         ar.Play();
 
         player.GetComponentInChildren<Rigidbody2D>().isKinematic = false;
+
+
 
     }
 

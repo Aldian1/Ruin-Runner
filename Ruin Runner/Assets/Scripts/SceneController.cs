@@ -206,6 +206,7 @@ public class SceneController : MonoBehaviour
         movement = true;
         Player.GetComponent<Player_Controller>().enabled = true;
         Player.transform.GetChild(2).GetComponent<TrailRenderer>().enabled = true;
+		Player.GetComponent<Rigidbody2D> ().isKinematic = false;
 
 
         SpawnWorld();
@@ -440,6 +441,8 @@ public class SceneController : MonoBehaviour
         coinplus.GetComponent<StatsLoader>().enabled = true;
 
         reset.transform.GetChild(0).GetChild(2).GetChild(1).GetComponent<Text>().text = distancefrom.ToString() + "ft";
+
+		Player.GetComponentInChildren<Rigidbody2D>().isKinematic = false;
     }
 
 

@@ -46,7 +46,7 @@ public class Player_Controller : MonoBehaviour
     void OnCollisionEnter2D(Collision2D col)
     {
 
-        Debug.Log(col.gameObject.tag);
+       // Debug.Log(col.gameObject.tag);
         //Debug.Log ("Collided");
         if (this.enabled == true)
         {
@@ -145,6 +145,7 @@ public class Player_Controller : MonoBehaviour
             mgitem.SetActive(false);
             Time.timeScale = .5F;
             StartCoroutine("ItemTimer", item);
+			PlayerPrefs.SetInt("PotAmount", PlayerPrefs.GetInt("PotAmount") - 1);
             HoldableItem.GetComponent<SpriteRenderer>().sprite = PotionItem_;
         }
 
@@ -228,5 +229,7 @@ public class Player_Controller : MonoBehaviour
             mgitem.SetActive(true);
         }
         HoldableItem.SetActive(false);
+
+		GetComponent<Rigidbody2D> ().isKinematic = false;
     }
 }
