@@ -3,19 +3,21 @@ using System.Collections;
 using UnityEngine.Advertisements;
 
 public class Watchforangel : MonoBehaviour {
-	/*
+
 	// Use this for initialization
-	void Start () {
+    void OnEnable()
+    {
+        if (PlayerPrefs.GetInt("AngelAmount") == 0)
+        {
+            this.transform.parent.gameObject.SetActive(true);
 
+        }
+        else
+        {
 
-		if (PlayerPrefs.GetInt ("AngelAmount") == 0) {
-			this.gameObject.SetActive (true);
-	
-		} else {
-
-			this.gameObject.SetActive (false);
-		}
-	}
+            this.transform.parent.gameObject.SetActive(false);
+        }
+    }
 	
 	public void ShowRewardedAd()
 	{
@@ -44,5 +46,5 @@ public class Watchforangel : MonoBehaviour {
 		}
 
 	}
-	*/
+	
 }
